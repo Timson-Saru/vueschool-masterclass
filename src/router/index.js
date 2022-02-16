@@ -1,10 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import sourceData from '@/data.json'
+import store from '@/store'
 const routes = [
   {
     path: '/forum/:forumId',
     name: 'PageForum',
     props: true,
+    beforeEnter(to, from, next) {
+      const forumExists = store.state.forums.find(forum => forum.id === to.params.forumId)
+      if (forumExists) {
+        next()
+      } else {
+        next({
+          name: 'NoPage',
+          params: { pathMatch: to.path.substring(1).split('/') },
+          hash: to.hash,
+          query: to.query
+        })
+      }
+    },
     component: () => import('@/pages/PageForum.vue')
   },
   {
@@ -17,7 +30,7 @@ const routes = [
     name: 'ThreadShow',
     props: true,
     beforeEnter(to, from, next) {
-      const threadExists = sourceData.threads.find(thread => thread.id === to.params.id)
+      const threadExists = store.state.threads.find(thread => thread.id === to.params.id)
       if (threadExists) {
         next()
       } else {
@@ -36,8 +49,8 @@ const routes = [
     path: '/category/:categoryId',
     props: true,
     beforeEnter(to, from, next) {
-      const threadExists = sourceData.categories.find(category => category.id === to.params.categoryId)
-      if (threadExists) {
+      const categoryExists = store.state.categories.find(category => category.id === to.params.categoryId)
+      if (categoryExists) {
         next()
       } else {
         next({
