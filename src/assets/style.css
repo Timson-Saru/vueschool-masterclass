@@ -1005,7 +1005,6 @@ ul.breadcrumbs li {
 }
 
 .text-large,
-.list-title,
 .forum-stats ul li,
 .profile-card .user-website,
 .activity-list .activity .activity-header .title,
@@ -2640,7 +2639,6 @@ figure {
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
-	border: 2px dotted gray;
 }
 
 @media (min-width: 240px) and (max-width: 720px) {
@@ -2794,4 +2792,8 @@ hr {
 #app {
 	background: #f5f8fe;
 	min-height: 100vh;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 }

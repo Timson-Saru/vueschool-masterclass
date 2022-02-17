@@ -26,6 +26,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageHome.vue')
   },
   {
+    path: '/me',
+    name: 'PageProfile',
+    component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageProfile.vue')
+  },
+  {
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
