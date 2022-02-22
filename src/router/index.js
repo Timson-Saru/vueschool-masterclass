@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
+import PageProfile from '@/pages/PageProfile.vue'
 const routes = [
   {
     path: '/forum/:forumId',
@@ -24,6 +25,12 @@ const routes = [
     path: '/',
     name: 'PageHome',
     component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageHome.vue')
+  },
+  {
+    path: '/me/edit',
+    name: 'PageProfileEdit',
+    props: { edit: true },
+    component: PageProfile
   },
   {
     path: '/me',
