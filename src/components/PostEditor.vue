@@ -18,8 +18,6 @@ export default {
   methods: {
     addPost() {
       const postData = {
-        userId: 'jUjmgCurRRdzayqbRMO7aTG9X1G2',
-        publishedAt: Math.floor(Date.now() / 1000),
         text: this.newPostText
       }
       this.$emit('saveNewPost', { postData })

@@ -35,6 +35,7 @@ const routes = [
   {
     path: '/me',
     name: 'PageProfile',
+    meta: { toTop: true, smoothScroll: true },
     component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageProfile.vue')
   },
   {
@@ -85,7 +86,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  linkActiveClass: 'jigaboo-cock-sucking-motherfuckers'
+  linkActiveClass: 'jigaboo-cock-sucking-motherfuckers',
+  scrollBehavior(to) {
+    const scroll = {}
+    if (to.meta.toTop) scroll.top = 0
+    if (to.meta.smoothScroll) scroll.behavior = 'smooth'
+    return scroll
+  }
 })
 
 export default router

@@ -30,6 +30,8 @@ export default createStore({
   actions: {
     createPost(context, post) {
       post.id = 'testUser' + Math.random()
+      post.userId = context.state.authId
+      post.publishedAt = Math.floor(Date.now() / 1000)
       context.commit('addPost', post)
       context.commit('appendToThread', { threadId: post.threadId, postId: post.id })
     },
@@ -47,7 +49,6 @@ export default createStore({
     },
     appendToThread(state, { threadId, postId }) {
       state.threads.find(thread => thread.id === threadId).posts.push(postId)
-      console.log(postId)
     }
   }
 })
