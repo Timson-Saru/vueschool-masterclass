@@ -27,6 +27,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageHome.vue')
   },
   {
+    path: '/CreateThread',
+    name: 'PageCreateThread',
+    component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageCreateThread.vue')
+  },
+  {
     path: '/me/edit',
     name: 'PageProfileEdit',
     props: { edit: true },
