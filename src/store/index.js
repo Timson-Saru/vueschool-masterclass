@@ -37,9 +37,31 @@ export default createStore({
     },
     updateUser({ commit }, user) {
       commit('saveUser', { user, userId: user.id })
+    },
+    createThread(context, { title, text, forumId }) {
+      const id = 'gggThreadUser' + Math.random()
+      const userId = context.state.authId
+      const publishedAt = Math.floor(Date.now() / 1000)
+      const newThread = {
+        forumId,
+        id,
+        userId,
+        title,
+        publishedAt,
+        posts: []
+      }
+      context.commit('addThread', newThread)
+      context.commit('appendToForums', { threadId: newThread.id, forumId: newThread.forumId })
+      context.dispatch('createPost', { text, threadId: id })
     }
   },
   mutations: {
+    addThread(state, thread) {
+      state.threads.push(thread)
+    },
+    appendToForums(state, { forumId, threadId }) {
+      state.forums.find(forum => forum.id === forumId).threads.push(threadId)
+    },
     saveUser(state, { user, userId }) {
       const userIndex = state.users.findIndex(user => user.id === userId)
       state.users[userIndex] = user

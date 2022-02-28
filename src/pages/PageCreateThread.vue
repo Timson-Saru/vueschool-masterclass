@@ -1,7 +1,7 @@
 <template>
   <div class="col-full push-top">
     <h1>Create new thread in <i>{{forum.name}}</i></h1>
-    <form @submit.prevent="save" action="">
+    <form action="">
       <div class="form-group">
         <label for="thread_title">Title:</label>
         <input v-model="title" type="text" id="thread_title" class="form-input" name="title">
@@ -12,7 +12,7 @@
       </div>
       <div class="btn-group">
         <button @click="cancel" class="btn btn-ghost">Cancel</button>
-        <button class="btn btn-blue" type="submit" name="Publish">Publish </button>
+        <router-link @click="save" :to="{ name: 'PageForum', params: { forumId: forum.id } }" class="btn btn-blue" name="Publish">Publish</router-link>
       </div>
     </form>
   </div>
@@ -22,8 +22,8 @@
 
 export default {
   props: {
-    forum: {
-      type: Object,
+    forumId: {
+      type: String,
       required: true
     }
   },
@@ -33,9 +33,21 @@ export default {
       title: ''
     }
   },
+  computed: {
+    forum() {
+      return this.$store.state.forums.find(forum => forum.id === this.forumId)
+    }
+  },
   methods: {
     cancel() {},
-    save() {}
+    save() {
+      const thread = {
+        text: this.text,
+        title: this.title,
+        forumId: this.forumId
+      }
+      this.$store.dispatch('createThread', thread)
+    }
   }
 }
 

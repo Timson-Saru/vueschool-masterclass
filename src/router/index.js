@@ -27,8 +27,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageHome.vue')
   },
   {
-    path: '/CreateThread',
+    path: '/forum/:forumId/thread/create',
     name: 'PageCreateThread',
+    props: true,
     component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageCreateThread.vue')
   },
   {

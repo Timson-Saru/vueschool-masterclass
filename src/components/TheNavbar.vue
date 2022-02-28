@@ -11,7 +11,6 @@
         <div class="bottom bar"></div>
     </div>
 
-    <!-- use .navbar-open to open nav -->
     <nav class="navbar">
         <ul>
 
@@ -24,8 +23,6 @@
                     </span>
                 </router-link>
 
-                <!-- dropdown menu -->
-                <!-- add class "active-drop" to show the dropdown -->
                 <div id="user-dropdown">
                     <div class="triangle-drop"></div>
                     <ul class="dropdown-menu">
