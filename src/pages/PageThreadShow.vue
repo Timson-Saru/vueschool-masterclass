@@ -17,11 +17,10 @@ import PostEditor from '@/components/PostEditor.vue'
 export default {
   methods: {
     save({ postData }) {
-      const postObject = {
+      this.$store.dispatch('createPost', {
         ...postData,
         threadId: this.id
-      }
-      this.$store.dispatch('createPost', postObject)
+      })
     }
   },
   components: {
