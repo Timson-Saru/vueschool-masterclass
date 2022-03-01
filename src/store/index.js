@@ -38,7 +38,7 @@ export default createStore({
     updateUser({ commit }, user) {
       commit('saveUser', { user, userId: user.id })
     },
-    createThread(context, { title, text, forumId }) {
+    async createThread(context, { title, text, forumId }) {
       const id = 'gggThreadUser' + Math.random()
       const userId = context.state.authId
       const publishedAt = Math.floor(Date.now() / 1000)
@@ -53,6 +53,7 @@ export default createStore({
       context.commit('addThread', newThread)
       context.commit('appendToForums', { threadId: newThread.id, forumId: newThread.forumId })
       context.dispatch('createPost', { text, threadId: id })
+      return context.state.threads.find(thread => thread.id === id)
     }
   },
   mutations: {
