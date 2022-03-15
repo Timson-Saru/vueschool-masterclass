@@ -10,7 +10,7 @@
     </div>
     <div class="btn-group">
       <button @click="$emit('cancel')" class="btn btn-ghost">Cancel</button>
-      <button type="submit" class="btn btn-blue" name="Publish">Publish</button>
+      <button type="submit" class="btn btn-blue" name="Publish">{{ buttonText }}</button>
     </div>
   </form>
 </template>
@@ -37,7 +37,12 @@ export default {
   },
   methods: {
     save() {
-      this.$emit('save', { title: this.title, text: this.text })
+      this.$emit('save', { ...this.thread })
+    }
+  },
+  computed: {
+    buttonText() {
+      return this.title === '' ? 'Publish' : 'Update'
     }
   }
 }

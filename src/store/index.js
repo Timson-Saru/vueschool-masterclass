@@ -54,11 +54,25 @@ export default createStore({
       context.commit('appendToForums', { threadId: newThread.id, forumId: newThread.forumId })
       context.dispatch('createPost', { text, threadId: id })
       return context.state.threads.find(thread => thread.id === id)
+    },
+    async updateThread(context, { title, text, id }) {
+      const thread = context.state.threads.find(t => t.id === id)
+      const post = context.state.posts.find(p => p.id === thread.posts[0])
+      const newThread = { ...thread, title }
+      const newPost = { ...post, text }
+      context.commit('addThread', newThread)
+      context.commit('addPost', newPost)
+      return newThread
     }
   },
   mutations: {
     addThread(state, thread) {
-      state.threads.push(thread)
+      const index = state.threads.findIndex(t => t.id === thread.id)
+      if (index !== -1) {
+        state.threads[index] = thread
+      } else {
+        state.threads.push(thread)
+      }
     },
     appendToForums(state, { forumId, threadId }) {
       state.forums.find(forum => forum.id === forumId).threads.push(threadId)
@@ -68,7 +82,12 @@ export default createStore({
       state.users[userIndex] = user
     },
     addPost(state, post) {
-      state.posts.push(post)
+      const index = state.posts.findIndex(p => p.id === post.id)
+      if (index !== -1) {
+        state.posts[index] = post
+      } else {
+        state.posts.push(post)
+      }
     },
     appendToThread(state, { threadId, postId }) {
       state.threads.find(thread => thread.id === threadId).posts.push(postId)
