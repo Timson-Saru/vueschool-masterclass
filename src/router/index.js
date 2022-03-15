@@ -64,6 +64,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "THREAD SHOW PAGE" */ '@/pages/PageThreadShow.vue')
   },
   {
+    path: '/thread/:threadId/edit',
+    name: 'PageUpdateThread',
+    props: true,
+    component: () => import(/* webpackChunkName: "HOME PAGE" */ '@/pages/PageUpdateThread.vue')
+  },
+  {
     name: 'PageCategory',
     path: '/category/:categoryId',
     props: true,
