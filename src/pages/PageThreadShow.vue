@@ -2,7 +2,13 @@
   <div class="col-large push-top" >
 
     <h1>{{ thread.title }}</h1>
-
+     <router-link
+      class="btn btn-blue"
+      :to="{ name: 'PageUpdateThread', params: { id: this.id } }"
+      tag="button"
+    >
+      Edit
+    </router-link>
     <PostList :posts="threadPosts"/>
 
     <PostEditor @saveNewPost="save"/>
