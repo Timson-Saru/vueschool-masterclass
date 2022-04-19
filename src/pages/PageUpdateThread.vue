@@ -30,8 +30,8 @@ export default {
     cancel() {
       this.$router.push({ name: 'ThreadShow', params: { id: this.id } })
     },
-    async save({ title, text }) {
-      const thread = await this.$store.dispatch('updateThread', { text, title, id: this.id })
+    save({ title, text }) {
+      this.$store.dispatch('updateThread', { text, title, id: this.id })
       this.$router.push({ name: 'ThreadShow', params: { id: this.id } })
     }
   }
