@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 import PageProfile from '@/pages/PageProfile.vue'
+import { findById } from '@/helpers'
 const routes = [
   {
     path: '/forum/:forumId',
     name: 'PageForum',
     props: true,
     beforeEnter(to, from, next) {
-      const forumExists = store.state.forums.find(forum => forum.id === to.params.forumId)
+      const forumExists = findById(store.state.forums, to.params.forumId)
       if (forumExists) {
         next()
       } else {
@@ -49,7 +50,7 @@ const routes = [
     name: 'ThreadShow',
     props: true,
     beforeEnter(to, from, next) {
-      const threadExists = store.state.threads.find(thread => thread.id === to.params.id)
+      const threadExists = findById(store.state.threads, to.params.id)
       if (threadExists) {
         next()
       } else {
@@ -74,7 +75,7 @@ const routes = [
     path: '/category/:categoryId',
     props: true,
     beforeEnter(to, from, next) {
-      const categoryExists = store.state.categories.find(category => category.id === to.params.categoryId)
+      const categoryExists = findById(store.state.categories, to.params.categoryId)
       if (categoryExists) {
         next()
       } else {

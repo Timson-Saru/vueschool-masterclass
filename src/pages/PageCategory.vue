@@ -13,6 +13,7 @@
 
 <script>
 import ForumList from '@/components/ForumList.vue'
+import { findById } from '@/helpers'
 export default {
   props: {
     categoryId: {
@@ -25,7 +26,7 @@ export default {
   },
   computed: {
     category() {
-      return this.$store.state.categories.find(category => category.id === this.categoryId)
+      return findById(this.$store.state.categories, this.categoryId)
     },
     forums() {
       return this.$store.state.forums.filter(forum => forum.categoryId === this.categoryId)

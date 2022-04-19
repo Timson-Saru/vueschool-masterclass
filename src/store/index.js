@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import sourceData from '@/data.json'
+import { findById } from '@/helpers'
 
 export default createStore({
   state: {
@@ -8,7 +9,7 @@ export default createStore({
   },
   getters: {
     authUser: state => {
-      const user = state.users.find(user => user.id === state.authId)
+      const user = findById(state.users, state.authId)
       if (!user) return null
       return {
         ...user,
@@ -53,11 +54,11 @@ export default createStore({
       context.commit('addThread', newThread)
       context.commit('appendToForums', { threadId: newThread.id, forumId: newThread.forumId })
       context.dispatch('createPost', { text, threadId: id })
-      return context.state.threads.find(thread => thread.id === id)
+      return findById(context.state.threads, id)
     },
     async updateThread(context, { title, text, id }) {
-      const thread = context.state.threads.find(t => t.id === id)
-      const post = context.state.posts.find(p => p.id === thread.posts[0])
+      const thread = findById(context.state.threads, id)
+      const post = findById(context.state.posts, thread.posts[0])
       const newThread = { ...thread, title }
       const newPost = { ...post, text }
       context.commit('addThread', newThread)
@@ -75,7 +76,7 @@ export default createStore({
       }
     },
     appendToForums(state, { forumId, threadId }) {
-      state.forums.find(forum => forum.id === forumId).threads.push(threadId)
+      findById(state.forums, forumId).threads.push(threadId)
     },
     saveUser(state, { user, userId }) {
       const userIndex = state.users.findIndex(user => user.id === userId)
@@ -90,7 +91,7 @@ export default createStore({
       }
     },
     appendToThread(state, { threadId, postId }) {
-      state.threads.find(thread => thread.id === threadId).posts.push(postId)
+      findById(state.threads, threadId).posts.push(postId)
     }
   }
 })
