@@ -1,6 +1,6 @@
 <template>
   <div class="col-full push-top">
-    <!-- <h1>Editing: <i>{{thread.title}}</i></h1> -->
+    <h1>Editing: <i>{{thread.title}}</i></h1>
     <ThreadEditor :title="thread.title" :text="firstPost" @save="save" @cancel="cancel" />
   </div>
 </template>
@@ -20,7 +20,6 @@ export default {
   computed: {
     thread() {
       return this.$store.state.threads.find(t => {
-        console.log('looking for:', this.id, 'WITH THIS', t.id)
         return t.id === this.id
       })
     },
