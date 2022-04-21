@@ -9,6 +9,10 @@
     >
       Edit
     </router-link>
+    <p>
+      By <a class="link-unstyled">{{thread.author}}</a>, <AppDate :timeStamp="thread.publishedAt"/>.
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{thread.replies}} replies by {{thread.contributors}} contributors</span>
+    </p>
     <PostList :posts="threadPosts"/>
 
     <PostEditor @saveNewPost="save"/>
@@ -19,7 +23,6 @@
 <script>
 import PostList from '@/components/PostList.vue'
 import PostEditor from '@/components/PostEditor.vue'
-import { findById } from '@/helpers'
 export default {
   methods: {
     save({ postData }) {
@@ -40,14 +43,11 @@ export default {
     }
   },
   computed: {
-    threads() {
-      return this.$store.state.threads
-    },
     posts() {
       return this.$store.state.posts
     },
     thread() {
-      return findById(this.threads, this.id)
+      return this.$store.getters.thread(this.id)
     },
     threadPosts() {
       return this.posts.filter(post => post.threadId === this.id)

@@ -10,7 +10,7 @@
     </div>
     <div class="btn-group">
       <button @click="$emit('cancel')" class="btn btn-ghost">Cancel</button>
-      <button type="submit" class="btn btn-blue" name="Publish">{{ textExist ? 'Update' : 'Publush' }}</button>
+      <button type="submit" class="btn btn-blue" name="Publish">{{ textExists ? 'Update' : 'Publush' }}</button>
     </div>
   </form>
 </template>
@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    textExist() {
+    textExists() {
       return !!this.title
     }
   }
