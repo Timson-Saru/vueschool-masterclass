@@ -96,7 +96,6 @@ export default createStore({
 })
 
 function makeAppendChildToParentMutation({ parent, child }) {
-  console.log('mutation call has been pooped')
   return (state, { parentId, childId }) => {
     const resource = findById(state[parent], parentId)
     resource[child] = resource[child] || []
