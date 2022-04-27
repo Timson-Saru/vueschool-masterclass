@@ -5,54 +5,60 @@ import { findById, apsert } from '@/helpers'
 export default createStore({
   state: {
     ...sourceData,
-    authId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2'
+    authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3'
   },
   getters: {
-    authUser: state => {
-      const user = findById(state.users, state.authId)
-      if (!user) return null
-      return {
-        ...user,
-        get posts() {
-          return state.posts.filter(post => post.userId === user.id)
-        },
-        get threads() {
-          return state.threads.filter(thread => thread.userId === user.id)
-        },
-        get postsCount() {
-          return this.posts.length
-        },
-        get threadsCount() {
-          return this.threads.length
+    authUser: (state, getters) => {
+      return getters.user(state.authId)
+    },
+    user: state => {
+      return (id) => {
+        const user = findById(state.users, id)
+        if (!user) return null
+        return {
+          ...user,
+          get posts() {
+            return state.posts.filter(post => post.userId === user.id)
+          },
+          get threads() {
+            return state.threads.filter(thread => thread.userId === user.id)
+          },
+          get postsCount() {
+            return this.posts.length
+          },
+          get threadsCount() {
+            return this.threads.length
+          }
         }
       }
     },
     thread: state => {
-      return (threadId) => {
-        const thread = findById(state.threads, threadId)
+      return (id) => {
+        const thread = findById(state.threads, id)
+        // thread.contributors = thread.contributors || []
         return {
           ...thread,
-          get replies() {
-            return thread.posts.length - 1
-          },
-          get contributors() {
-            return thread.contributors.length
-          },
           get author() {
             return findById(state.users, thread.userId).name
+          },
+          get repliesCount() {
+            return thread.posts.length - 1
+          },
+          get contributorsCount() {
+            return thread.contributors ? thread.contributors.length : 0
           }
         }
       }
     }
   },
   actions: {
-    createPost(context, post) {
+    createPost({ commit, state }, post) {
       post.id = 'testUser' + Math.random()
-      post.userId = context.state.authId
+      post.userId = state.authId
       post.publishedAt = Math.floor(Date.now() / 1000)
-      context.commit('addPost', post)
-      context.commit('appendPostToThread', { childId: post.id, parentId: post.threadId })
-      context.commit('appendContributorToThread', { childId: post.userId, parentId: post.threadId })
+      commit('addPost', post)
+      commit('appendPostToThread', { childId: post.id, parentId: post.threadId })
+      commit('appendContributorToThread', { childId: state.authId, parentId: post.threadId })
     },
     updateUser({ commit }, user) {
       commit('saveUser', { user, userId: user.id })

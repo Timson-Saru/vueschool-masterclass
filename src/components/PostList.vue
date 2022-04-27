@@ -17,7 +17,8 @@
             />
           </a>
 
-          <p class="desktop-only text-small">107 posts</p>
+          <p class="desktop-only text-small">{{ userById(post.userId).postsCount }} posts</p>
+          <p class="desktop-only text-small">{{ userById(post.userId).threadsCount }} threads</p>
 
         </div>
 
@@ -41,7 +42,6 @@
 </template>
 
 <script>
-import { findById } from '@/helpers'
 export default {
   computed: {
     users() {
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     userById(userId) {
-      return findById(this.users, userId)
+      return this.$store.getters.user(userId)
     }
   }
 }

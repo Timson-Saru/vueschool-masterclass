@@ -11,7 +11,7 @@
     </router-link>
     <p>
       By <a class="link-unstyled">{{thread.author}}</a>, <AppDate :timeStamp="thread.publishedAt"/>.
-      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{thread.replies}} replies by {{thread.contributors}} contributors</span>
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{thread.repliesCount}} replies by {{thread.contributorsCount}} {{thread.contributorsCount > 1 ? 'contributors' : 'contributor'}}</span>
     </p>
     <PostList :posts="threadPosts"/>
 

@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     threads() {
-      return this.$store.state.threads.filter(thread => thread.forumId === this.forumId)
+      return this.forum.threads ? this.forum.threads.map(threadId => this.$store.getters.thread(threadId)) : []
     },
     forum() {
       return findById(this.$store.state.forums, this.forumId)
