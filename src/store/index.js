@@ -1,5 +1,4 @@
 import { createStore } from 'vuex'
-
 import { findById, apsert } from '@/helpers'
 
 export default createStore({
@@ -8,6 +7,7 @@ export default createStore({
     forums: [],
     threads: [],
     posts: [],
+    users: [],
     authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3'
   },
   getters: {
@@ -38,11 +38,10 @@ export default createStore({
     thread: state => {
       return (id) => {
         const thread = findById(state.threads, id)
-        // thread.contributors = thread.contributors || []
         return {
           ...thread,
           get author() {
-            return findById(state.users, thread.userId).name
+            return findById(state.users, thread.userId)
           },
           get repliesCount() {
             return thread.posts.length - 1
@@ -64,7 +63,7 @@ export default createStore({
       commit('appendContributorToThread', { childId: state.authId, parentId: post.threadId })
     },
     updateUser({ commit }, user) {
-      commit('saveUser', { user, userId: user.id })
+      commit('addUser', { user })
     },
     async createThread(context, { title, text, forumId }) {
       const id = 'gggThread' + Math.random()
@@ -84,18 +83,18 @@ export default createStore({
       const newPost = { ...post, text }
       context.commit('addThread', newThread)
       context.commit('addPost', newPost)
+      return newThread
     }
   },
   mutations: {
-    addThread(state, thread) {
+    addThread(state, { thread }) {
       apsert(state.threads, thread)
     },
-    addPost(state, post) {
+    addPost(state, { post }) {
       apsert(state.posts, post)
     },
-    saveUser(state, { user, userId }) {
-      const userIndex = state.users.findIndex(user => user.id === userId)
-      state.users[userIndex] = user
+    addUser(state, { user }) {
+      apsert(state.users, user)
     },
     appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
     appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),

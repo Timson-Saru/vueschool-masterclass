@@ -3,7 +3,9 @@ import App from './App.vue'
 import router from './router/index'
 import store from '@/store'
 import AppDate from '@/components/AppDate.vue'
-import fireBaseConfig from '@/config/firebase'
+import firebase from 'firebase/compat/app'
+import firebaseConfig from '@/config/firebase'
+firebase.initializeApp(firebaseConfig)
 
 createApp(App)
   .use(router)

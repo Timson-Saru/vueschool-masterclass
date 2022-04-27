@@ -3,6 +3,7 @@
 
     <h1>{{ thread.title }}</h1>
      <router-link
+      v-if="thread?.id"
       class="btn btn-blue"
       :to="{ name: 'PageUpdateThread', params: { id: this.id } }"
       tag="button"
@@ -10,11 +11,16 @@
       Edit
     </router-link>
     <p>
-      By <a class="link-unstyled">{{thread.author}}</a>, <AppDate :timeStamp="thread.publishedAt"/>.
-      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{thread.repliesCount}} replies by {{thread.contributorsCount}} {{thread.contributorsCount > 1 ? 'contributors' : 'contributor'}}</span>
+      By <a class="link-unstyled">{{thread.author?.name}}</a>, <AppDate :timeStamp="thread.publishedAt"/>.
+      <span
+        style="float:right; margin-top: 2px;"
+        class="hide-mobile text-faded text-small"
+      >
+        {{thread.repliesCount}} replies by {{thread.contributorsCount}}
+        {{thread.contributorsCount > 1 ? 'contributors' : 'contributor'}}
+      </span>
     </p>
     <PostList :posts="threadPosts"/>
-
     <PostEditor @saveNewPost="save"/>
 
   </div>
@@ -23,6 +29,8 @@
 <script>
 import PostList from '@/components/PostList.vue'
 import PostEditor from '@/components/PostEditor.vue'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
 export default {
   methods: {
     save({ postData }) {
@@ -31,6 +39,29 @@ export default {
         threadId: this.id
       })
     }
+  },
+  created() {
+    firebase.firestore().collection('threads').doc(this.id).onSnapshot((doc) => {
+      const thread = { ...doc.data(), id: doc.id }
+      this.$store.commit('addThread', { thread })
+
+      firebase.firestore().collection('users').doc(thread.userId).onSnapshot((doc) => {
+        const user = { ...doc.data(), id: doc.id }
+        this.$store.commit('addUser', { user })
+      })
+
+      thread.posts.forEach(postId => {
+        firebase.firestore().collection('posts').doc(postId).onSnapshot((doc) => {
+          const post = { ...doc.data(), id: doc.id }
+          this.$store.commit('addPost', { post })
+
+          firebase.firestore().collection('users').doc(post.userId).onSnapshot((doc) => {
+            const user = { ...doc.data(), id: doc.id }
+            this.$store.commit('addUser', { user })
+          })
+        })
+      })
+    })
   },
   components: {
     PostList,
