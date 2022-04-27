@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 import PageProfile from '@/pages/PageProfile.vue'
+import PageThreadShow from '@/pages//PageThreadShow.vue'
 import { findById } from '@/helpers'
-import PageThreadShow from '@/pages/PageThreadShow.vue'
 const routes = [
   {
     path: '/forum/:forumId',
@@ -50,6 +50,7 @@ const routes = [
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
+    component: () => import(/* webpackChunkName: "THREAD SHOW PAGE" */ '@/pages/PageThreadShow.vue')
     // beforeEnter(to, from, next) {
     //   const threadExists = findById(store.state.threads, to.params.id)
     //   if (threadExists) {
@@ -62,8 +63,7 @@ const routes = [
     //       query: to.query
     //     })
     //   }
-    // },
-    component: PageThreadShow
+    // }
   },
   {
     path: '/thread/:id/edit',
