@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { findById, apsert } from '@/helpers'
+import firebase from 'firebase/compat/app'
 
 export default createStore({
   state: {
@@ -41,19 +42,49 @@ export default createStore({
         return {
           ...thread,
           get author() {
-            return findById(state.users, thread.userId)
+            return thread ? findById(state.users, thread.userId) : null
           },
           get repliesCount() {
-            return thread.posts.length - 1
+            return thread ? thread.posts.length - 1 : null
           },
           get contributorsCount() {
-            return thread.contributors ? thread.contributors.length : 0
+            return thread ? thread.contributors ? thread.contributors.length : 0 : null
           }
         }
       }
     }
   },
   actions: {
+    fetchThread({ state, commit }, { id }) {
+      console.log(id)
+      return new Promise(resolve => {
+        firebase.firestore().collection('threads').doc(id).onSnapshot((doc) => {
+          const thread = { ...doc.data(), id: doc.id }
+          commit('addThread', { thread })
+          resolve(thread)
+        })
+      })
+    },
+    fetchUser({ state, commit }, { id }) {
+      console.log(id)
+      return new Promise(resolve => {
+        firebase.firestore().collection('users').doc(id).onSnapshot((doc) => {
+          const user = { ...doc.data(), id: doc.id }
+          commit('addUser', { user })
+          resolve(user)
+        })
+      })
+    },
+    fetchPost({ state, commit }, { id }) {
+      console.log(id)
+      return new Promise(resolve => {
+        firebase.firestore().collection('posts').doc(id).onSnapshot((doc) => {
+          const post = { ...doc.data(), id: doc.id }
+          commit('addPost', { post })
+          resolve(post)
+        })
+      })
+    },
     createPost({ commit, state }, post) {
       post.id = 'testUser' + Math.random()
       post.userId = state.authId
