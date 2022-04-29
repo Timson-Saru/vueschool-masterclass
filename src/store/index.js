@@ -39,22 +39,53 @@ export default createStore({
     thread: state => {
       return (id) => {
         const thread = findById(state.threads, id)
+        if (!thread) return {}
         return {
           ...thread,
           get author() {
-            return thread ? findById(state.users, thread.userId) : null
+            return findById(state.users, thread.userId)
           },
           get repliesCount() {
-            return thread ? thread.posts.length - 1 : null
+            return thread.posts.length - 1
           },
           get contributorsCount() {
-            return thread ? thread.contributors ? thread.contributors.length : 0 : null
+            return thread.contributors.length
           }
         }
       }
     }
   },
   actions: {
+    // ---------------------
+    // Fetch single resource
+    // ---------------------
+    fetchCategory({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'categories', id })
+    },
+    fetchForum({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'forums', id })
+    },
+    fetchThread({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'threads', id })
+    },
+    fetchUser({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'users', id })
+    },
+    fetchPost({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'posts', id })
+    },
+    fetchItem({ commit }, { id, resource }) {
+      return new Promise(resolve => {
+        firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
+          const item = { ...doc.data(), id: doc.id }
+          commit('addItem', { resource, id, item })
+          resolve(item)
+        })
+      })
+    },
+    // ------------------------
+    // Fetch multiple resources
+    // ------------------------
     fetchAllCategories({ commit }) {
       return new Promise((resolve) => {
         firebase.firestore().collection('categories').onSnapshot((querySnapshot) => {
@@ -67,14 +98,8 @@ export default createStore({
         })
       })
     },
-    fetchThread({ dispatch }, { id }) {
-      return dispatch('fetchItem', { id, resource: 'threads' })
-    },
-    fetchUser({ dispatch }, { id }) {
-      return dispatch('fetchItem', { id, resource: 'users' })
-    },
-    fetchPost({ dispatch }, { id }) {
-      return dispatch('fetchItem', { id, resource: 'posts' })
+    fetchCategories({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'categories', ids })
     },
     fetchForums({ dispatch }, { ids }) {
       return dispatch('fetchItems', { resource: 'forums', ids })
@@ -90,15 +115,6 @@ export default createStore({
     },
     fetchItems({ dispatch }, { ids, resource }) {
       return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource })))
-    },
-    fetchItem({ state, commit }, { id, resource }) {
-      return new Promise(resolve => {
-        firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
-          const item = { ...doc.data(), id: doc.id }
-          commit('addItem', { resource, id, item })
-          resolve(item)
-        })
-      })
     },
     createPost({ commit, state }, post) {
       post.id = 'testUser' + Math.random()

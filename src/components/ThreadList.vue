@@ -2,12 +2,13 @@
   <div class="thread-list">
     <h2 class="list-title">Threads</h2>
     <div v-for="thread in threads" :key="thread.id" class="thread">
+      <template v-if="thread.id">
       <div>
         <p>
           <router-link :to="{name: 'ThreadShow', params:{ id: thread.id }}">{{ thread.title }}</router-link>
         </p>
         <p class="text-faded text-xsmall">
-          By <a href="#">{{ thread.author }}</a>, <AppDate :timeStamp="thread.publishedAt"/>.
+          By <a href="#">{{ userById(thread.userId).name }}</a>, <AppDate :timeStamp="thread.publishedAt"/>.
         </p>
       </div>
       <div class="activity">
@@ -17,11 +18,12 @@
         <img class="avatar-medium" :src="userById(thread.userId).avatar" alt="">
         <div>
           <p class="text-xsmall">
-            <a href="#">{{ thread.author }}</a>
+            <a href="#">{{ userById(thread.userId).name }}</a>
           </p>
           <p class="text-xsmall text-faded"> <AppDate :timeStamp="thread.publishedAt"/> </p>
         </div>
       </div>
+      </template>
     </div>
   </div>
 </template>
@@ -37,12 +39,13 @@ export default {
   },
   computed: {
     users() {
+      console.log('lol', this.threads)
       return this.$store.state.users
     }
   },
   methods: {
     userById(userId) {
-      return findById(this.users, userId)
+      return findById(this.users, userId) || {}
     }
   }
 }
