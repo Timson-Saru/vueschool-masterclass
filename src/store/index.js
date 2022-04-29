@@ -55,33 +55,33 @@ export default createStore({
     }
   },
   actions: {
-    fetchThread({ state, commit }, { id }) {
-      console.log(id)
-      return new Promise(resolve => {
-        firebase.firestore().collection('threads').doc(id).onSnapshot((doc) => {
-          const thread = { ...doc.data(), id: doc.id }
-          commit('addThread', { thread })
-          resolve(thread)
-        })
-      })
+    fetchThread({ dispatch }, { id }) {
+      return dispatch('fetchItem', { id, resource: 'threads' })
     },
-    fetchUser({ state, commit }, { id }) {
-      console.log(id)
-      return new Promise(resolve => {
-        firebase.firestore().collection('users').doc(id).onSnapshot((doc) => {
-          const user = { ...doc.data(), id: doc.id }
-          commit('addUser', { user })
-          resolve(user)
-        })
-      })
+    fetchUser({ dispatch }, { id }) {
+      return dispatch('fetchItem', { id, resource: 'users' })
     },
-    fetchPost({ state, commit }, { id }) {
-      console.log(id)
+    fetchPost({ dispatch }, { id }) {
+      return dispatch('fetchItem', { id, resource: 'posts' })
+    },
+    fetchThreads({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'threads', ids })
+    },
+    fetchUsers({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'users', ids })
+    },
+    fetchPosts({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'posts', ids })
+    },
+    fetchItems({ dispatch }, { ids, resource }) {
+      return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource })))
+    },
+    fetchItem({ state, commit }, { id, resource }) {
       return new Promise(resolve => {
-        firebase.firestore().collection('posts').doc(id).onSnapshot((doc) => {
-          const post = { ...doc.data(), id: doc.id }
-          commit('addPost', { post })
-          resolve(post)
+        firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
+          const item = { ...doc.data(), id: doc.id }
+          commit('addItem', { resource, id, item })
+          resolve(item)
         })
       })
     },
@@ -89,43 +89,37 @@ export default createStore({
       post.id = 'testUser' + Math.random()
       post.userId = state.authId
       post.publishedAt = Math.floor(Date.now() / 1000)
-      commit('addPost', post)
+      commit('addItem', { resource: 'posts', item: post })
       commit('appendPostToThread', { childId: post.id, parentId: post.threadId })
       commit('appendContributorToThread', { childId: state.authId, parentId: post.threadId })
     },
     updateUser({ commit }, user) {
-      commit('addUser', { user })
+      commit('addItem', { resource: 'users', item: user })
     },
-    async createThread(context, { title, text, forumId }) {
+    async createThread({ state, commit, dispatch }, { title, text, forumId }) {
       const id = 'gggThread' + Math.random()
-      const userId = context.state.authId
+      const userId = state.authId
       const publishedAt = Math.floor(Date.now() / 1000)
-      const newThread = { forumId, id, userId, title, publishedAt }
-      context.commit('addThread', newThread)
-      context.commit('appendThreadToForum', { childId: newThread.id, parentId: newThread.forumId })
-      context.commit('appendThreadToUser', { childId: id, parentId: userId })
-      context.dispatch('createPost', { text, threadId: id })
-      return findById(context.state.threads, id)
+      const thread = { forumId, id, userId, title, publishedAt }
+      commit('addItem', { resource: 'threads', item: thread })
+      commit('appendThreadToForum', { childId: thread.id, parentId: thread.forumId })
+      commit('appendThreadToUser', { childId: id, parentId: userId })
+      dispatch('createPost', { text, threadId: id })
+      return findById(state.threads, id)
     },
-    updateThread(context, { title, text, id }) {
-      const thread = findById(context.state.threads, id)
-      const post = findById(context.state.posts, thread.posts[0])
+    updateThread({ state, commit }, { title, text, id }) {
+      const thread = findById(state.threads, id)
+      const post = findById(state.posts, thread.posts[0])
       const newThread = { ...thread, title }
       const newPost = { ...post, text }
-      context.commit('addThread', newThread)
-      context.commit('addPost', newPost)
+      commit('addItem', { resource: 'threads', item: newThread })
+      commit('addItem', { resource: 'posts', item: newPost })
       return newThread
     }
   },
   mutations: {
-    addThread(state, { thread }) {
-      apsert(state.threads, thread)
-    },
-    addPost(state, { post }) {
-      apsert(state.posts, post)
-    },
-    addUser(state, { user }) {
-      apsert(state.users, user)
+    addItem(state, { resource, item }) {
+      apsert(state[resource], item)
     },
     appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
     appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
