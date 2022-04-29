@@ -26,11 +26,15 @@ export default {
   },
   computed: {
     category() {
-      return findById(this.$store.state.categories, this.categoryId)
+      return findById(this.$store.state.categories, this.categoryId) || {}
     },
     forums() {
       return this.$store.state.forums.filter(forum => forum.categoryId === this.categoryId)
     }
+  },
+  async beforeCreate() {
+    const category = await this.$store.dispatch('fetchCategory', { id: this.categoryId })
+    this.$store.dispatch('fetchForums', { ids: category.forums })
   }
 }
 </script>

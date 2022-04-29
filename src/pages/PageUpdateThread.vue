@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread && firstPost" class="col-full push-top">
     <h1>Editing: <i>{{thread.title}}</i></h1>
     <ThreadEditor :title="thread.title" :text="firstPost" @save="save" @cancel="cancel" />
   </div>
@@ -23,7 +23,8 @@ export default {
       return findById(this.$store.state.threads, this.id)
     },
     firstPost() {
-      return findById(this.$store.state.posts, this.thread.posts[0]).text
+      const firstPost = findById(this.$store.state.posts, this.thread.posts[0])
+      return firstPost ? firstPost.text : ''
     }
   },
   methods: {
@@ -34,6 +35,10 @@ export default {
       this.$store.dispatch('updateThread', { text, title, id: this.id })
       this.$router.push({ name: 'ThreadShow', params: { id: this.id } })
     }
+  },
+  async created() {
+    const thread = await this.$store.dispatch('fetchThread', { id: this.id })
+    this.$store.dispatch('fetchPost', { id: thread.posts[0] })
   }
 }
 
