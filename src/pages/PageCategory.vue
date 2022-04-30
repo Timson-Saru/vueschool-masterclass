@@ -4,7 +4,7 @@
       <h1>{{ category.name }}</h1>
       <div class="forum-list">
         <h2 class="list-title">{{ category.name }}</h2>
-        <ForumList :forums="forums"/>
+        <ForumList :forums="getForumsForCategory(category)"/>
       </div>
 
     </div>
@@ -13,6 +13,7 @@
 
 <script>
 import ForumList from '@/components/ForumList.vue'
+import { mapActions } from 'vuex'
 import { findById } from '@/helpers'
 export default {
   props: {
@@ -21,20 +22,23 @@ export default {
       type: String
     }
   },
+  methods: {
+    ...mapActions(['fetchCategory', 'fetchForums']),
+    getForumsForCategory(category) {
+      return this.$store.state.forums.filter(forum => forum.categoryId === category.id)
+    }
+  },
   components: {
     ForumList
   },
   computed: {
     category() {
       return findById(this.$store.state.categories, this.categoryId) || {}
-    },
-    forums() {
-      return this.$store.state.forums.filter(forum => forum.categoryId === this.categoryId)
     }
   },
-  async beforeCreate() {
-    const category = await this.$store.dispatch('fetchCategory', { id: this.categoryId })
-    this.$store.dispatch('fetchForums', { ids: category.forums })
+  async created() {
+    const category = await this.fetchCategory({ id: this.categoryId })
+    this.fetchForums({ ids: category.forums })
   }
 }
 </script>

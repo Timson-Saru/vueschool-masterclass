@@ -29,23 +29,23 @@
 <script>
 import PostList from '@/components/PostList.vue'
 import PostEditor from '@/components/PostEditor.vue'
+import { mapActions } from 'vuex'
 
 export default {
   methods: {
+    ...mapActions(['createPost', 'fetchThread', 'fetchPosts', 'fetchUsers']),
     save({ postData }) {
-      this.$store.dispatch('createPost', {
+      this.createPost({
         ...postData,
         threadId: this.id
       })
     }
   },
   async created() {
-    const thread = await this.$store.dispatch('fetchThread', { id: this.id })
-    this.$store.dispatch('fetchUser', { id: thread.userId })
-
-    const posts = await this.$store.dispatch('fetchPosts', { ids: thread.posts })
-    const users = posts.map(post => post.userId)
-    this.$store.dispatch('fetchUsers', { ids: users })
+    const thread = await this.fetchThread({ id: this.id })
+    const posts = await this.fetchPosts({ ids: thread.posts })
+    const users = posts.map(post => post.userId).concat(thread.userId)
+    this.fetchUsers({ ids: users })
   },
   components: {
     PostList,

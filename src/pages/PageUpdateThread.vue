@@ -7,6 +7,7 @@
 
 <script>
 import ThreadEditor from '@/components/ThreadEditor.vue'
+import { mapActions } from 'vuex'
 import { findById } from '@/helpers'
 export default {
   props: {
@@ -28,17 +29,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['updateThread', 'fetchThread', 'fetchPost']),
     cancel() {
       this.$router.push({ name: 'ThreadShow', params: { id: this.id } })
     },
-    save({ title, text }) {
-      this.$store.dispatch('updateThread', { text, title, id: this.id })
-      this.$router.push({ name: 'ThreadShow', params: { id: this.id } })
+    async save({ title, text }) {
+      const thread = await this.updateThread({ text, title, id: this.id })
+      this.$router.push({ name: 'ThreadShow', params: { id: thread.id } })
     }
   },
   async created() {
-    const thread = await this.$store.dispatch('fetchThread', { id: this.id })
-    this.$store.dispatch('fetchPost', { id: thread.posts[0] })
+    const thread = await this.fetchThread({ id: this.id })
+    this.fetchPost({ id: thread.posts[0] })
   }
 }
 

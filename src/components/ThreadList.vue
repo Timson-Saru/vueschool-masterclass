@@ -39,7 +39,6 @@ export default {
   },
   computed: {
     users() {
-      console.log('lol', this.threads)
       return this.$store.state.users
     }
   },
