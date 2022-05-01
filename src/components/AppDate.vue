@@ -1,6 +1,6 @@
 <template>
-  <span :title="publishedAt()">
-    {{ humanRidableDate() }}
+  <span :title="publishedAt">
+    {{ humanRidableDate }}
   </span>
 </template>
 
@@ -14,15 +14,18 @@ export default {
   props: {
     timeStamp: {
       required: true,
-      type: Number
+      type: [Number, Object]
     }
   },
-  methods: {
+  computed: {
+    normolizedTimestamp() {
+      return this.timeStamp?.seconds || this.timeStamp
+    },
     humanRidableDate() {
-      return dayjs.unix(this.timeStamp).fromNow()
+      return dayjs.unix(this.normolizedTimestamp).fromNow()
     },
     publishedAt() {
-      return dayjs.unix(this.timeStamp).format('llll')
+      return dayjs.unix(this.normolizedTimestamp).format('llll')
     }
   }
 }
