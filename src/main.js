@@ -6,11 +6,13 @@ import AppDate from '@/components/AppDate.vue'
 import firebaseConfig from '@/config/firebase'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
+import FontAwesome from '@/plugins/FontAwesome'
 
 firebase.initializeApp(firebaseConfig)
 
 createApp(App)
   .use(router)
   .use(store)
+  .use(FontAwesome)
   .component('AppDate', AppDate)
   .mount('#app')

@@ -32,6 +32,17 @@ import PostEditor from '@/components/PostEditor.vue'
 import { mapActions } from 'vuex'
 
 export default {
+  computed: {
+    posts() {
+      return this.$store.state.posts
+    },
+    thread() {
+      return this.$store.getters.thread(this.id)
+    },
+    threadPosts() {
+      return this.posts.filter(post => post.threadId === this.id)
+    }
+  },
   methods: {
     ...mapActions(['createPost', 'fetchThread', 'fetchPosts', 'fetchUsers']),
     save({ postData }) {
@@ -56,17 +67,7 @@ export default {
       required: true,
       type: String
     }
-  },
-  computed: {
-    posts() {
-      return this.$store.state.posts
-    },
-    thread() {
-      return this.$store.getters.thread(this.id)
-    },
-    threadPosts() {
-      return this.posts.filter(post => post.threadId === this.id)
-    }
   }
+
 }
 </script>

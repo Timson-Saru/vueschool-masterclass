@@ -106,7 +106,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  linkActiveClass: 'jigaboo-cock-sucking-motherfuckers',
+  linkActiveClass: 'activeLink',
   scrollBehavior(to) {
     const scroll = {}
     if (to.meta.toTop) scroll.top = 0

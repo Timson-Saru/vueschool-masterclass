@@ -1,8 +1,8 @@
-import { findById, apsert } from '@/helpers'
+import { findById, apsert, docToResource } from '@/helpers'
 
 export default {
-  addItem(state, { resource, item }) {
-    apsert(state[resource], item)
+  setItem(state, { resource, item }) {
+    apsert(state[resource], docToResource(item))
   },
   appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
   appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
@@ -13,7 +13,7 @@ function makeAppendChildToParentMutation({ parent, child }) {
   return (state, { parentId, childId }) => {
     const resource = findById(state[parent], parentId)
     if (!resource) {
-      console.log(`${childId} cant be pushed to ${parentId} cus no`)
+      console.warn(`There is no id:${parentId} in state[${parent}]`)
       return
     }
     resource[child] = resource[child] || []

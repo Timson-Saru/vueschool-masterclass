@@ -25,10 +25,30 @@
         <div class="post-content">
 
           <div>
-            <p>
+            <div v-if="editing === post.id"> Editing </div>
+            <p v-else>
               {{ post.text }}
             </p>
           </div>
+
+          <a
+            v-if="editing === post.id"
+            @click.prevent="toggleEditMode(post.id)"
+            style="margin-left: auto; padding-left: 10px;"
+            class="link-unstyled"
+            title="Make a change"
+          >
+            <fa icon="xmark" />
+          </a>
+          <a
+            v-else
+            @click.prevent="toggleEditMode(post.id)"
+            style="margin-left: auto; padding-left: 10px;"
+            class="link-unstyled"
+            title="Make a change"
+          >
+            <fa icon="pencil-alt" />
+          </a>
 
         </div>
 
@@ -54,9 +74,17 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      editing: null
+    }
+  },
   methods: {
     userById(userId) {
       return this.$store.getters.user(userId)
+    },
+    toggleEditMode(id) {
+      this.editing = this.editing === id ? null : id
     }
   }
 }
