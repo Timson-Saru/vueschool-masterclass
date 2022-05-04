@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import sourceData from '@/data.json'
-import { findById } from '@/helpers'
 import PageProfile from '@/pages/PageProfile.vue'
 import PageForum from '@/pages/PageForum.vue'
 import PageHome from '@/pages/PageHome.vue'
@@ -9,6 +7,7 @@ import PageThreadShow from '@/pages/PageThreadShow.vue'
 import PageUpdateThread from '@/pages/PageUpdateThread.vue'
 import PageCategory from '@/pages/PageCategory.vue'
 import Page404 from '@/pages/Page404.vue'
+import store from '@/store'
 const routes = [
   {
     path: '/forum/:forumId',
@@ -114,5 +113,7 @@ const router = createRouter({
     return scroll
   }
 })
-
+router.beforeEach(() => {
+  store.dispatch('unsubscribeAllSnapshots')
+})
 export default router

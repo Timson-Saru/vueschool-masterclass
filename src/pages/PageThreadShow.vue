@@ -16,12 +16,11 @@
         style="float:right; margin-top: 2px;"
         class="hide-mobile text-faded text-small"
       >
-        {{thread.repliesCount}} replies by {{thread.contributorsCount}}
-        {{thread.contributorsCount === 1 ? 'contributors' : 'contributor'}}
+        {{thread.repliesCount}} {{repliesText}} by {{thread.contributorsCount}} {{contributorsText}}
       </span>
     </p>
     <PostList :posts="threadPosts"/>
-    <PostEditor @saveNewPost="save"/>
+    <PostEditor @save="save"/>
 
   </div>
 </template>
@@ -41,13 +40,19 @@ export default {
     },
     threadPosts() {
       return this.posts.filter(post => post.threadId === this.id)
+    },
+    contributorsText() {
+      return this.thread.contributorsCount === 1 ? 'contributor' : 'contributors'
+    },
+    repliesText() {
+      return this.thread.repliesCount === 1 ? 'reply' : 'replies'
     }
   },
   methods: {
     ...mapActions(['createPost', 'fetchThread', 'fetchPosts', 'fetchUsers']),
-    save({ postData }) {
+    save({ post }) {
       this.createPost({
-        ...postData,
+        ...post,
         threadId: this.id
       })
     }

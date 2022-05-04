@@ -8,25 +8,28 @@ export default {
   fetchUser: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'users', id }),
   fetchPost: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'posts', id }),
   fetchAuthUser: ({ dispatch, state }) => dispatch('fetchItem', { resource: 'users', id: state.authId }),
-  fetchItem({ commit }, { id, resource }) {
+  fetchItem({ commit }, { resource, id }) {
     return new Promise(resolve => {
-      firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
+      const unsubscribe = firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
+        console.log('snap snap', id)
         const item = { ...doc.data(), id: doc.id }
-        commit('setItem', { resource, id, item })
+        commit('setItem', { resource, item })
         resolve(item)
       })
+      commit('appendUnsubscribe', { unsubscribe })
     })
   },
   fetchAllCategories({ commit }) {
     return new Promise((resolve) => {
-      firebase.firestore().collection('categories').onSnapshot((querySnapshot) => {
+      const unsubscribe = firebase.firestore().collection('categories').onSnapshot((querySnapshot) => {
         const categories = querySnapshot.docs.map(doc => {
-          const item = { id: doc.id, ...doc.data() }
+          const item = { ...doc.data(), id: doc.id }
           commit('setItem', { resource: 'categories', item })
           return item
         })
         resolve(categories)
       })
+      commit('appendUnsubscribe', { unsubscribe })
     })
   },
   fetchCategories: ({ dispatch }, { ids }) => dispatch('fetchItems', { resource: 'categories', ids }),
@@ -57,6 +60,20 @@ export default {
     commit('setItem', { resource: 'posts', item: { ...newPost.data(), id: newPost.id } })
     commit('appendPostToThread', { childId: newPost.id, parentId: post.threadId })
     commit('appendContributorToThread', { childId: state.authId, parentId: post.threadId })
+  },
+  async updatePost({ commit, state }, { text, id }) {
+    const post = {
+      text,
+      edited: {
+        at: firebase.firestore.FieldValue.serverTimestamp(),
+        by: state.authId,
+        moderated: false
+      }
+    }
+    const postRef = firebase.firestore().collection('posts').doc(id)
+    await postRef.update(post)
+    const updatedPost = await postRef.get()
+    commit('setItem', { resource: 'posts', item: updatedPost })
   },
   updateUser({ commit }, user) {
     commit('setItem', { resource: 'users', item: user })
@@ -100,14 +117,9 @@ export default {
     commit('setItem', { resource: 'threads', item: newThread })
     commit('setItem', { resource: 'posts', item: newPost })
     return docToResource(newThread)
+  },
+  async unsubscribeAllSnapshots({ state, commit }) {
+    state.unsubscribes.forEach(unsubscribe => unsubscribe())
+    commit('clearAllUnsubscribes')
   }
 }
-// async updateThread({ state, commit }, { title, text, id }) {
-//   const thread = findById(state.threads, id)
-//   const post = findById(state.posts, thread.posts[0])
-//   const newThread = { ...thread, title }
-//   const newPost = { ...post, text }
-//   commit('setItem', { resource: 'threads', item: newThread })
-//   commit('setItem', { resource: 'posts', item: newPost })
-//   return newThread
-// }

@@ -4,6 +4,13 @@ export default {
   setItem(state, { resource, item }) {
     apsert(state[resource], docToResource(item))
   },
+  appendUnsubscribe(state, { unsubscribe }) {
+    state.unsubscribes.push(unsubscribe)
+  },
+  clearAllUnsubscribes(state) {
+    console.log('I FUCKING CALLED')
+    state.unsubscribes = []
+  },
   appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
   appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
   appendThreadToUser: makeAppendChildToParentMutation({ parent: 'users', child: 'threads' }),
