@@ -8,7 +8,6 @@ export default {
     state.unsubscribes.push(unsubscribe)
   },
   clearAllUnsubscribes(state) {
-    console.log('I FUCKING CALLED')
     state.unsubscribes = []
   },
   appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
