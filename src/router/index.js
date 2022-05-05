@@ -8,6 +8,7 @@ import PageUpdateThread from '@/pages/PageUpdateThread.vue'
 import PageCategory from '@/pages/PageCategory.vue'
 import Page404 from '@/pages/Page404.vue'
 import store from '@/store'
+import { findById } from '@/helpers'
 const routes = [
   {
     path: '/forum/:forumId',
@@ -55,20 +56,20 @@ const routes = [
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
-    component: PageThreadShow
-    // beforeEnter(to, from, next) {
-    //   const threadExists = findById(sourceData.threads, to.params.id)
-    //   if (threadExists) {
-    //     next()
-    //   } else {
-    //     next({
-    //       name: 'NoPage',
-    //       params: { pathMatch: to.path.substring(1).split('/') },
-    //       hash: to.hash,
-    //       query: to.query
-    //     })
-    //   }
-    // }
+    component: PageThreadShow,
+    beforeEnter(to, from, next) {
+      const threadExists = findById(store.state.threads, to.params.id)
+      if (threadExists) {
+        next()
+      } else {
+        next({
+          name: 'NoPage',
+          params: { pathMatch: to.path.substring(1).split('/') },
+          hash: to.hash,
+          query: to.query
+        })
+      }
+    }
   },
   {
     path: '/thread/:id/edit',
@@ -114,6 +115,7 @@ const router = createRouter({
   }
 })
 router.beforeEach(() => {
+  console.log('unsub')
   store.dispatch('unsubscribeAllSnapshots')
 })
 export default router

@@ -5,6 +5,18 @@
   </div>
 </template>
 
+<script>
+import asyncDataStatus from '@/mixins/asyncDataStatus'
+
+export default {
+  mixins: [asyncDataStatus],
+  created() {
+    this.$emit('ready')
+  }
+}
+
+</script>
+
 <style lang="scss" scoped>
   .not-found {
     display: flex;

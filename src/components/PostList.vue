@@ -36,7 +36,7 @@
           </div>
 
           <a
-            v-if="editing === post.id"
+            v-show="editing === post.id"
             @click.prevent="toggleEditMode(post.id)"
             style="margin-left: auto; padding-left: 10px;"
             class="link-unstyled"
@@ -45,7 +45,7 @@
             <fa icon="xmark" />
           </a>
           <a
-            v-if="post.userId === $store.state.authId && editing !== post.id"
+            v-show="post.userId === $store.state.authId && editing !== post.id"
             @click.prevent="toggleEditMode(post.id)"
             style="margin-left: auto; padding-left: 10px;"
             class="link-unstyled"

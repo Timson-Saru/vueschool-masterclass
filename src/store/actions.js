@@ -13,7 +13,7 @@ export default {
       const unsubscribe = firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
         const item = { ...doc.data(), id: doc.id }
         commit('setItem', { resource, item })
-        resolve(item)
+        setTimeout(() => resolve(item), 700)
       })
       commit('appendUnsubscribe', { unsubscribe })
     })
