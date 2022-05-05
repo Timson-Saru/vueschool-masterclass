@@ -7,6 +7,7 @@
 
 <script>
 import ThreadEditor from '@/components/ThreadEditor.vue'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import { mapActions } from 'vuex'
 import { findById } from '@/helpers'
 export default {
@@ -19,6 +20,7 @@ export default {
   components: {
     ThreadEditor
   },
+  mixins: [asyncDataStatus],
   computed: {
     thread() {
       return findById(this.$store.state.threads, this.id)
