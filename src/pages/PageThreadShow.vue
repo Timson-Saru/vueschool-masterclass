@@ -32,6 +32,11 @@ import asyncDataStatus from '@/mixins/asyncDataStatus'
 import { mapActions } from 'vuex'
 
 export default {
+  data() {
+    return {
+      poop: true
+    }
+  },
   computed: {
     posts() {
       return this.$store.state.posts

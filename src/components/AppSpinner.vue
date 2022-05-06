@@ -1,13 +1,25 @@
 <template>
-  <div class="sk-folding-cube">
-    <div class="sk-cube1 sk-cube"></div>
-    <div class="sk-cube2 sk-cube"></div>
-    <div class="sk-cube4 sk-cube"></div>
-    <div class="sk-cube3 sk-cube"></div>
+  <div class="spinnerBackground">
+    <div class="sk-folding-cube">
+      <div class="sk-cube1 sk-cube"></div>
+      <div class="sk-cube2 sk-cube"></div>
+      <div class="sk-cube4 sk-cube"></div>
+      <div class="sk-cube3 sk-cube"></div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+  .spinnerBackground {
+    height: calc(100vh - 80px);
+    height: -o-calc(100vh - 80px); /* opera */
+    height: -webkit-calc(100vh - 80px); /* google, safari */
+    height: -moz-calc(100vh - 80px); /* firefox */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .sk-folding-cube {
   margin: 20px auto;
   width: 60px;
@@ -33,7 +45,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #4e9c7f;
+  background: rgb(0,212,255);
   -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
           animation: sk-foldCubeAngle 2.4s infinite linear both;
   -webkit-transform-origin: 100% 100%;

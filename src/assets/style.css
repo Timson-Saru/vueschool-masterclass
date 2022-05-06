@@ -46,13 +46,6 @@ figcaption {
   font-size: 0.8rem;
 }
 
-.spinnerBackground {
-  min-height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .list-title {
   background-color: #263959;
   border-bottom-left-radius: 20px;

@@ -115,7 +115,6 @@ const router = createRouter({
   }
 })
 router.beforeEach(() => {
-  console.log('unsub')
   store.dispatch('unsubscribeAllSnapshots')
 })
 export default router
