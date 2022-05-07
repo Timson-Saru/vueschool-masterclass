@@ -44,8 +44,7 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 @import './assets/style.css';
 @import '~nprogress/nprogress.css';
-
 </style>

@@ -17,7 +17,7 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .not-found {
     display: flex;
     justify-content: center;
