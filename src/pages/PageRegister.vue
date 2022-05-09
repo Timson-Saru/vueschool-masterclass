@@ -49,8 +49,12 @@ export default {
   },
   methods: {
     async register() {
-      await this.$store.dispatch('registerUserWithEmailAndPassword', { ...this.form })
-      this.$router.push('/')
+      try {
+        await this.$store.dispatch('registerUserWithEmailAndPassword', { ...this.form })
+        this.$router.push('/')
+      } catch (e) {
+        console.log('hello, error: ', e)
+      }
     }
   },
   created() {

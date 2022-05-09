@@ -10,6 +10,9 @@ export default {
   clearAllUnsubscribes(state) {
     state.unsubscribes = []
   },
+  setAuthId(state, id) {
+    state.authId = id
+  },
   appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
   appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
   appendThreadToUser: makeAppendChildToParentMutation({ parent: 'users', child: 'threads' }),

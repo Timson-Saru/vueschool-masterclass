@@ -7,7 +7,12 @@ export default {
   fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'threads', id }),
   fetchUser: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'users', id }),
   fetchPost: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'posts', id }),
-  fetchAuthUser: ({ dispatch, state }) => dispatch('fetchItem', { resource: 'users', id: state.authId }),
+  fetchAuthUser: ({ dispatch, commit }) => {
+    const userId = firebase.auth().currentUser?.uid
+    if (!userId) return
+    dispatch('fetchItem', { resource: 'users', id: userId })
+    commit('setAuthId', userId)
+  },
   fetchItem({ commit }, { resource, id }) {
     return new Promise(resolve => {
       const unsubscribe = firebase.firestore().collection(resource).doc(id).onSnapshot((doc) => {
