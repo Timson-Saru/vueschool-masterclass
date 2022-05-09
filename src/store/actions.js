@@ -39,12 +39,16 @@ export default {
   fetchItems({ dispatch }, { ids, resource }) {
     return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource })))
   },
-  async createUser({ commit }, { email, name, username, avatar = null }) {
+  async registerUserWithEmailAndPassword({ dispatch }, { avatar = null, email, password, username, name }) {
+    const result = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    await dispatch('createUser', { id: result.user.uid, email, name, username, avatar })
+  },
+  async createUser({ commit }, { id, email, name, username, avatar = null }) {
     const registeredAt = firebase.firestore.FieldValue.serverTimestamp()
     const usernameLower = username.toLowerCase()
     email = email.toLowerCase()
-    const user = { email, usernameLower, registeredAt, name, avatar, username }
-    const userRef = firebase.firestore().collection('users').doc()
+    const user = { email, name, username, avatar, usernameLower, registeredAt }
+    const userRef = firebase.firestore().collection('users').doc(id)
     userRef.set(user)
     const newUser = await userRef.get()
     commit('setItem', { resource: 'users', item: newUser })
