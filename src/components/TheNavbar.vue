@@ -14,23 +14,23 @@
     <nav class="navbar">
         <ul>
             <li v-if="authUser" class="navbar-user">
-                <router-link :to="{ name: 'PageProfile' }">
+                <a @click.prevent="toggleDropDown">
                     <img class="avatar-small" :src="authUser.avatar" :alt="`${authUser.name}'s profile picture`">
                     <span>
                         {{ authUser.name }}
                         <img class="icon-profile" src="../assets/svg/arrow-profile.svg" alt="">
                     </span>
-                </router-link>
+                </a>
 
-                <div id="user-dropdown">
+                <div id="user-dropdown" :class="{ 'active-drop': userDropdownOpened }">
                     <div class="triangle-drop"></div>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-menu-item"><a href="profile.html">View profile</a></li>
-                        <li class="dropdown-menu-item"><a href="#">Log out</a></li>
+                        <li class="dropdown-menu-item"><router-link :to="{ name: 'PageProfile' }">View profile</router-link></li>
+                        <li class="dropdown-menu-item"><a @click.prevent="$store.dispatch('signOut')">Sign Out</a></li>
                     </ul>
                 </div>
             </li>
-            <li v-if="authUser" class="navbar-item"><a @click.prevent="$store.dispatch('signOut')">Sign Out</a></li>
+
             <li v-if="!authUser" class="navbar-item"><router-link :to="{ name: 'PageSignIn' }">Sign In</router-link></li>
             <li v-if="!authUser" class="navbar-item"><router-link :to="{ name: 'PageRegister' }">Register</router-link></li>
         </ul>
@@ -63,6 +63,16 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters(['authUser'])
+  },
+  data() {
+    return {
+      userDropdownOpened: false
+    }
+  },
+  methods: {
+    toggleDropDown() {
+      this.userDropdownOpened = !this.userDropdownOpened
+    }
   }
 }
 </script>
