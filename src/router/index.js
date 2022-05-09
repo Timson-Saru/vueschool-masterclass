@@ -7,6 +7,7 @@ import PageThreadShow from '@/pages/PageThreadShow.vue'
 import PageUpdateThread from '@/pages/PageUpdateThread.vue'
 import PageCategory from '@/pages/PageCategory.vue'
 import Page404 from '@/pages/Page404.vue'
+import PageRegister from '@/pages/PageRegister.vue'
 import store from '@/store'
 import { findById } from '@/helpers'
 const routes = [
@@ -33,6 +34,11 @@ const routes = [
     path: '/',
     name: 'PageHome',
     component: PageHome
+  },
+  {
+    path: '/register',
+    name: 'PageRegister',
+    component: PageRegister
   },
   {
     path: '/forum/:forumId/thread/create',
