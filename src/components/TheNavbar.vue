@@ -30,6 +30,9 @@
                     </ul>
                 </div>
             </li>
+            <li v-if="authUser" class="navbar-item"><a @click.prevent="$store.dispatch('signOut')">Sign Out</a></li>
+            <li v-if="!authUser" class="navbar-item"><router-link :to="{ name: 'PageSignIn' }">Sign In</router-link></li>
+            <li v-if="!authUser" class="navbar-item"><router-link :to="{ name: 'PageRegister' }">Register</router-link></li>
         </ul>
         <!-- <ul>
             <li class="navbar-item">
