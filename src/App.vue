@@ -9,7 +9,7 @@
 <script>
 import TheNavbar from '@/components/TheNavbar.vue'
 import AppSpinner from '@/components/AppSpinner.vue'
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 import NProgress from 'nprogress'
 export default {
   name: 'App',
@@ -18,7 +18,7 @@ export default {
     AppSpinner
   },
   methods: {
-    ...mapActions(['fetchAuthUser']),
+    // ...mapActions(['fetchAuthUser']),
     onPageReady() {
       this.showPage = true
       NProgress.done()
@@ -29,7 +29,7 @@ export default {
       showSpinner: false,
       speed: 200
     })
-    this.fetchAuthUser()
+    // this.fetchAuthUser()
     this.$router.beforeEach(() => {
       this.showPage = false
       NProgress.start()

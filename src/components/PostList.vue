@@ -70,11 +70,6 @@
 import PostEditor from '@/components/PostEditor.vue'
 import { mapActions } from 'vuex'
 export default {
-  computed: {
-    users() {
-      return this.$store.state.users
-    }
-  },
   props: {
     posts: {
       type: Array,
