@@ -1,15 +1,15 @@
 <template>
   <form @submit.prevent="save">
     <div class="form-group">
-      <label for="thread_title">Title:</label>
-      <input v-model="thread.title" type="text" id="thread_title" class="form-input" name="title">
+      <label for="form_title">Title:</label>
+      <input v-model="form.title" type="text" id="form_title" class="form-input" name="title">
     </div>
     <div class="form-group">
-      <label for="thread_content">Content:</label>
-      <textarea v-model="thread.text" id="thread_content" class="form-input" name="content" rows="8" cols="140"></textarea>
+      <label for="form_content">Content:</label>
+      <textarea v-model="form.text" id="form_content" class="form-input" name="content" rows="8" cols="140"></textarea>
     </div>
     <div class="btn-group">
-      <button @click="$emit('cancel')" class="btn btn-ghost">Cancel</button>
+      <button @click.prevent="$emit('cancel')" class="btn btn-ghost">Cancel</button>
       <button type="submit" class="btn btn-blue" name="Publish">{{ textExists ? 'Update' : 'Publush' }}</button>
     </div>
   </form>
@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      thread: {
+      form: {
         title: this.title,
         text: this.text
       }
@@ -37,12 +37,25 @@ export default {
   },
   methods: {
     save() {
-      this.$emit('save', { ...this.thread })
+      this.$emit('clean')
+      this.$emit('save', { ...this.form })
     }
   },
   computed: {
     textExists() {
       return !!this.title
+    }
+  },
+  watch: {
+    form: {
+      handler() {
+        if (this.form.title !== this.title || this.form.text !== this.text) {
+          this.$emit('dirty')
+        } else {
+          this.$emit('clean')
+        }
+      },
+      deep: true
     }
   }
 }

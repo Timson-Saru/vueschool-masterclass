@@ -2,7 +2,12 @@
 
   <div v-if="asyncDataStatus_ready" class="col-full push-top">
     <h1>Create new thread in <i>{{forum.name}}</i></h1>
-    <ThreadEditor @save="save" @cancel="cancel" />
+    <ThreadEditor
+      @clean="formIsDirty = false"
+      @dirty="formIsDirty = true"
+      @save="save"
+      @cancel="cancel"
+    />
   </div>
 
 </template>
@@ -45,6 +50,17 @@ export default {
   async created() {
     await this.fetchForum({ id: this.forumId })
     this.asyncDataStatus_fetched()
+  },
+  beforeRouteLeave(to, from) {
+    if (this.formIsDirty) {
+      const confirmed = window.confirm('Are you sure you want to leave? Unsaved changes will be lost')
+      if (!confirmed) return false
+    }
+  },
+  data() {
+    return {
+      formIsDirty: false
+    }
   }
 }
 

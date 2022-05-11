@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div class="flex-grid">
+    <p>profile boy</p>
+    <!-- <div class="flex-grid">
       <div class="col-3 push-top">
           <UserProfileCard v-if="!edit" :user="user"/>
           <ProfileEditor v-else :user="user"/>
@@ -16,14 +17,15 @@
         <hr>
         <PostList :posts="user.posts"/>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import PostList from '@/components/PostList.vue'
-import UserProfileCard from '@/components/UserProfileCard.vue'
-import ProfileEditor from '@/components/ProfileEditor.vue'
+// import PostList from '@/components/PostList.vue'
+// import UserProfileCard from '@/components/UserProfileCard.vue'
+// import ProfileEditor from '@/components/ProfileEditor.vue'
+import store from '@/store'
 import { mapGetters } from 'vuex'
 export default {
   props: {
@@ -33,12 +35,19 @@ export default {
     }
   },
   components: {
-    PostList,
-    UserProfileCard,
-    ProfileEditor
+    // PostList,
+    // UserProfileCard,
+    // ProfileEditor
   },
   computed: {
     ...mapGetters({ user: 'authUser' })
+  },
+  beforeRouteEnter(to, from) {
+    console.log(store.state.authId)
+    if (!store.state.authId) return { name: 'PageHome' }
+  },
+  created() {
+    this.$emit('ready')
   }
 }
 </script>

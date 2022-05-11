@@ -1,7 +1,14 @@
 <template>
   <div v-if="thread && firstPost" class="col-full push-top">
     <h1>Editing: <i>{{thread.title}}</i></h1>
-    <ThreadEditor :title="thread.title" :text="firstPost" @save="save" @cancel="cancel" />
+    <ThreadEditor
+      :title="thread.title"
+      :text="firstPost"
+      @save="save"
+      @cancel="cancel"
+      @dirty="formIsDirty = true"
+      @clean="formIsDirty = false"
+    />
   </div>
 </template>
 
@@ -43,6 +50,18 @@ export default {
   async created() {
     const thread = await this.fetchThread({ id: this.id })
     this.fetchPost({ id: thread.posts[0] })
+    this.$emit('ready')
+  },
+  data() {
+    return {
+      formIsDirty: false
+    }
+  },
+  beforeRouteLeave() {
+    if (this.formIsDirty) {
+      const confirmed = window.confirm('Are you sure you want to leave? Unsaved changes will be lost')
+      if (!confirmed) return false
+    }
   }
 }
 
