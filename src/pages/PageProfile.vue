@@ -25,7 +25,7 @@
 // import PostList from '@/components/PostList.vue'
 // import UserProfileCard from '@/components/UserProfileCard.vue'
 // import ProfileEditor from '@/components/ProfileEditor.vue'
-import store from '@/store'
+
 import { mapGetters } from 'vuex'
 export default {
   props: {
@@ -41,10 +41,6 @@ export default {
   },
   computed: {
     ...mapGetters({ user: 'authUser' })
-  },
-  beforeRouteEnter(to, from) {
-    console.log(store.state.authId)
-    if (!store.state.authId) return { name: 'PageHome' }
   },
   created() {
     this.$emit('ready')

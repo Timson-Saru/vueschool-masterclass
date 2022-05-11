@@ -20,7 +20,7 @@
     <p v-if="user.website" class="text-large text-center">
       <i class="fa fa-globe"></i>
     <a href="#">{{ user.website }}</a></p>
-        </div>
+  </div>
 </template>
 
 <script>

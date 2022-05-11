@@ -47,6 +47,14 @@ const routes = [
     component: PageSignIn
   },
   {
+    path: '/logout',
+    name: 'SignOut',
+    async beforeEnter(to, from) {
+      await store.dispatch('signOut')
+      return { name: 'PageHome' }
+    }
+  },
+  {
     path: '/forum/:forumId/thread/create',
     name: 'PageCreateThread',
     props: true,
@@ -61,7 +69,7 @@ const routes = [
   {
     path: '/me',
     name: 'PageProfile',
-    meta: { toTop: true, smoothScroll: true },
+    meta: { toTop: true, smoothScroll: true, requiresAuth: true },
     component: PageProfile
   },
   {
@@ -126,7 +134,12 @@ const router = createRouter({
     return scroll
   }
 })
-router.beforeEach(() => {
+router.beforeEach(async(to, from) => {
+  store.dispatch('initAuthentication')
   store.dispatch('unsubscribeAllSnapshots')
+  if (to.meta.requiresAuth && !store.state.authId) {
+    return { name: 'PageHome' }
+  }
 })
+
 export default router

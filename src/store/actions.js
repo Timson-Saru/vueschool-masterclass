@@ -7,10 +7,10 @@ export default {
   fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'threads', id }),
   fetchUser: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'users', id }),
   fetchPost: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'posts', id }),
-  fetchAuthUser: ({ dispatch, commit }) => {
+  fetchAuthUser: async({ dispatch, commit }) => {
     const userId = firebase.auth().currentUser?.uid
     if (!userId) return
-    dispatch('fetchItem', {
+    await dispatch('fetchItem', {
       resource: 'users',
       id: userId,
       handleUnsubscribe: (unsubscribe) => {
@@ -173,5 +173,20 @@ export default {
       state.authUserUnsubscribe()
       commit('setAuthUserUnsubscribe', null)
     }
+  },
+  initAuthentication({ dispatch, commit, state }) {
+    if (state.authObserverUnsubscribe) state.authObserverUnsubscribe()
+    return new Promise((resolve) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged(async user => {
+        this.dispatch('unsubscribeAuthUserSnapshot')
+        if (user) {
+          await this.dispatch('fetchAuthUser')
+          resolve(user)
+        } else {
+          resolve(null)
+        }
+      })
+      commit('setAuthObserverUnsubscribe', unsubscribe)
+    })
   }
 }
